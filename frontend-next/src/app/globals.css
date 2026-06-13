@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&family=Instrument+Serif:ital@0;1&display=swap');
+/* Fonts loaded via next/font/google in layout.tsx (Inter, Space_Grotesk, Space_Mono) */
 
 @tailwind base;
 @tailwind components;
@@ -14,24 +14,34 @@
   --accent-dark: #d9820f;
   --accent-shadow: #b36400;
   --accent-foreground: #000000;
-  --font-display: 'Space Grotesk', sans-serif;
-  --font-mono: 'Space Mono', monospace;
-  --font-serif: 'Instrument Serif', serif;
+  /* Font variables injected by next/font via layout.tsx */
+  --font-display: var(--font-grotesk), 'Space Grotesk', sans-serif;
+  --font-mono: var(--font-mono-next, 'Space Mono'), monospace;
+  --font-serif: var(--font-grotesk), sans-serif;
 }
 
 body {
-  font-family: var(--font-display);
+  font-family: var(--font-grotesk), var(--font-display), sans-serif;
   font-size: 16px;
   line-height: 1.7 !important;
   color: var(--foreground);
   background: var(--background);
   overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 h1, h2, h3 { 
-  font-family: var(--font-display);
+  font-family: var(--font-grotesk), var(--font-display), sans-serif;
   font-weight: 700;
   line-height: 1.7 !important;
+  letter-spacing: -0.02em;
+}
+
+h4, h5, h6 {
+  font-family: var(--font-grotesk), var(--font-display), sans-serif;
+  font-weight: 600;
+  letter-spacing: -0.01em;
 }
 
 /* Ensure minimum 1.7 line height everywhere */
@@ -309,3 +319,51 @@ span[class*="rounded"] {
   transform: translateY(-2px);
   transition: all 0.3s ease;
 }
+
+/* ── Premium Typography: Linear/Notion Theme ── */
+
+/* Mono font for mono/code contexts */
+.font-mono, code, pre {
+  font-family: var(--font-mono), monospace !important;
+}
+
+/* Section label overlines (tracking-widest) → Space Mono */
+[class*="tracking-widest"] {
+  font-family: var(--font-mono), monospace;
+  font-size: 13px !important;
+  letter-spacing: 0.15em !important;
+}
+
+/* BRD body text */
+.brd-content p, .brd-content span {
+  font-size: 15px !important;
+  line-height: 1.8 !important;
+}
+
+/* Large score/metric numbers */
+.text-5xl, .text-6xl {
+  font-family: var(--font-grotesk), sans-serif;
+  font-weight: 800 !important;
+  letter-spacing: -0.04em !important;
+}
+
+/* Navigation tabs */
+nav button, nav a {
+  font-family: var(--font-grotesk), sans-serif;
+  font-size: 15px !important;
+  font-weight: 500 !important;
+}
+
+/* Table text */
+table td, table th {
+  font-size: 14px !important;
+  line-height: 1.6 !important;
+}
+
+/* Badges and pill labels */
+.badge, [class*="rounded-full"] {
+  font-family: var(--font-mono), monospace;
+  font-size: 11px !important;
+  letter-spacing: 0.08em !important;
+}
+
