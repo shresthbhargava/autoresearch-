@@ -9,6 +9,7 @@ import time
 import json
 import asyncio
 import uuid
+from pathlib import Path
 from pydantic import BaseModel
 from typing import Optional, List, Dict, Any
 from fastapi import APIRouter, HTTPException, BackgroundTasks
@@ -17,6 +18,10 @@ from app.models.schemas import ResearchRequest, BRDResponse, AgentTrace
 from app.agents.orchestrator import run_pipeline
 from app.services import gcs_service, bigquery_service
 from app.services import gemini_service
+
+# Reuse the same /tmp store as gcs_service for immediate local persistence
+_LOCAL_STORE = Path("/tmp/brd_sessions")
+_LOCAL_STORE.mkdir(parents=True, exist_ok=True)
 
 router = APIRouter()
 
@@ -118,6 +123,14 @@ async def generate_brd_background_task(
         
         brd = await gemini_service.generate_brd(enriched)
         
+        # --- Persist BRD to /tmp immediately so GET works even if streaming is slow ---
+        try:
+            _path = _LOCAL_STORE / f"{session_id}.json"
+            _path.write_text(json.dumps(brd, indent=2), encoding="utf-8")
+            print(f"[Session] BRD saved locally immediately: {_path}")
+        except Exception as _e:
+            print(f"[Session] Local save failed: {_e}")
+
         # Stream sections incrementally by updating the brd dict key-by-key with delay
         sections_in_order = [
             ("title", brd.get("title", f"BRD: {startup_name}")),
@@ -320,11 +333,16 @@ async def get_analytics():
 
 @router.get("/{session_id}")
 async def get_session_brd(session_id: str):
-    """Retrieve a previously generated BRD from GCS."""
+    """Retrieve a previously generated BRD — checks GCS then local /tmp fallback."""
+    # 1. Try GCS / local file via gcs_service (handles both)
     brd = await gcs_service.get_brd(session_id)
-    if not brd:
-        raise HTTPException(status_code=404, detail="Session not found")
-    return {"session_id": session_id, "brd": brd}
+    if brd:
+        return {"session_id": session_id, "brd": brd}
+    # 2. Try in-memory active_sessions (same process, session still hot)
+    session = active_sessions.get(session_id)
+    if session and session.get("brd"):
+        return {"session_id": session_id, "brd": session["brd"]}
+    raise HTTPException(status_code=404, detail="Session not found")
 
 
 # New API Router mounted under /api directly
