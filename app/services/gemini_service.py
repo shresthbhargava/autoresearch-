@@ -50,82 +50,127 @@ Return ONLY valid JSON with this structure:
 Set confidence (0-1) based on how much usable information was found.
 Input: {content}"""
 
-BRD_PROMPT = """You are a Senior Product Manager. Generate a complete, professional BRD.
+BRD_PROMPT = """You are a Senior Product Manager 
+with 15 years experience writing investor-grade BRDs.
 
-Based on this extracted data: {extracted_data}
+Generate a COMPLETE, SPECIFIC, DETAILED Business 
+Requirements Document based ONLY on this data:
 
-Return ONLY valid JSON with this BRD structure:
+{extracted_data}
+
+CRITICAL RULES:
+1. Every section must reference the SPECIFIC startup, 
+   product, and market from the input data
+2. NEVER use generic placeholders like "string" or 
+   "list of features" — use REAL specific content
+3. SWOT must be specific to THIS startup's market, 
+   NOT generic business advice
+4. Competitors must be REAL named companies in 
+   THIS startup's industry
+5. TAM/SAM/SOM must have REAL dollar values with 
+   reasoning specific to this market
+6. All requirements must reference actual features 
+   from the input
+7. User stories must use actual user types from input
+
+For TAM/SAM/SOM format EXACTLY like this:
+"TAM: $XB (reason). SAM: $XB (reason). SOM: $XM (reason)"
+
+Return ONLY valid JSON. No markdown. No explanation.
+
+JSON structure:
 {
-  "title": "BRD: [Project Name]",
+  "title": "BRD: [ACTUAL startup name from input]",
   "version": "1.0",
-  "date": "[today]",
-  "executive_summary": "2-3 sentence summary",
+  "date": "2026-06-13",
+  "executive_summary": "[3 sentences specific to THIS startup]",
   "problem_statement": {
-    "current_situation": "string",
-    "pain_points": ["list"],
-    "impact": "string"
+    "current_situation": "[specific current problem]",
+    "pain_points": ["specific pain 1", "specific pain 2", "specific pain 3"],
+    "impact": "[specific business/user impact]"
   },
-  "objectives": ["list of SMART objectives"],
+  "objectives": [
+    "SMART objective 1 with specific metric",
+    "SMART objective 2 with specific metric",
+    "SMART objective 3 with specific metric"
+  ],
   "scope": {
-    "in_scope": ["list"],
-    "out_of_scope": ["list"]
+    "in_scope": ["specific feature 1", "specific feature 2"],
+    "out_of_scope": ["specific exclusion 1", "specific exclusion 2"]
   },
   "stakeholders": [
-    {"role": "string", "responsibility": "string"}
+    {"role": "specific role", "responsibility": "specific responsibility"}
   ],
   "functional_requirements": [
-    {"id": "FR-001", "requirement": "string", "priority": "High/Medium/Low"}
+    {"id": "FR-001", "requirement": "specific requirement", "priority": "High"}
   ],
   "non_functional_requirements": [
-    {"id": "NFR-001", "requirement": "string", "category": "Performance/Security/Scalability"}
+    {"id": "NFR-001", "requirement": "specific NFR", "category": "Performance"}
   ],
   "user_stories": [
-    {"id": "US-001", "as_a": "string", "i_want": "string", "so_that": "string", "acceptance_criteria": ["list"]}
+    {
+      "id": "US-001",
+      "as_a": "specific user type",
+      "i_want": "specific action",
+      "so_that": "specific benefit",
+      "acceptance_criteria": ["specific criterion 1", "specific criterion 2"]
+    }
   ],
   "technical_architecture": {
-    "overview": "string",
-    "components": ["list"],
-    "data_flow": "string",
-    "tech_stack": ["list"]
+    "overview": "specific architecture description",
+    "components": ["specific component 1", "specific component 2"],
+    "data_flow": "specific data flow description",
+    "tech_stack": ["specific tech 1", "specific tech 2"]
   },
   "success_metrics": [
-    {"metric": "string", "target": "string", "measurement": "string"}
+    {"metric": "specific metric", "target": "specific target with number", "measurement": "specific method"}
   ],
   "risks": [
-    {"risk": "string", "probability": "High/Medium/Low", "impact": "High/Medium/Low", "mitigation": "string"}
+    {"risk": "specific risk", "probability": "High/Medium/Low", "impact": "High/Medium/Low", "mitigation": "specific mitigation"}
   ],
   "timeline": [
-    {"phase": "string", "duration": "string", "deliverables": ["list"]}
+    {"phase": "Phase name", "duration": "X weeks", "deliverables": ["specific deliverable"]}
   ],
   "swot": {
-    "strengths": ["list of strengths"],
-    "weaknesses": ["list of weaknesses"],
-    "opportunities": ["list of opportunities"],
-    "threats": ["list of threats"]
+    "strengths": [
+      "Specific strength unique to THIS startup",
+      "Specific competitive advantage",
+      "Specific technical or market advantage"
+    ],
+    "weaknesses": [
+      "Specific weakness THIS startup faces",
+      "Specific resource or market limitation"
+    ],
+    "opportunities": [
+      "Specific market opportunity for THIS sector",
+      "Specific growth vector for THIS product"
+    ],
+    "threats": [
+      "Specific named competitor threat",
+      "Specific market or regulatory threat"
+    ]
   },
   "competitors": [
-    {"name": "Competitor Name", "advantages": "key advantages", "disadvantages": "key disadvantages", "risk_level": "High/Medium/Low"}
+    {
+      "name": "REAL competitor company name",
+      "advantages": "their specific strengths",
+      "disadvantages": "their specific weaknesses vs us",
+      "risk_level": "High/Medium/Low"
+    }
   ],
   "citations": [
-    {"source_text": "sentence or quote from input text/context", "confidence": 0.95, "mapped_requirement": "which requirement or section this supports"}
+    {
+      "source_text": "exact quote from user input",
+      "confidence": 0.95,
+      "mapped_requirement": "which section this supports"
+    }
   ],
   "target_market": {
     "title": "Target Market Analysis",
-    "content": "A detailed market size and opportunity text. Must explicitly define and list TAM (Total Addressable Market), SAM (Serviceable Addressable Market), and SOM (Serviceable Obtainable Market) with currency values (e.g. TAM: $10B, SAM: $2.5B, SOM: $150M) so they can be parsed."
+    "content": "TAM: $XB (specific reasoning for THIS market). SAM: $XB (specific serviceable segment). SOM: $XM (realistic Year 1 capture). Primary users: [specific user types]. Geography: [specific markets]."
   },
-  "overall_confidence": 0.0
-}
-
-CRITICAL: Your response MUST be valid JSON only. 
-No markdown. No code fences. No explanation text.
-The root keys MUST be exactly:
-executive_summary, problem_statement, objectives, 
-scope, stakeholders, functional_requirements, 
-non_functional_requirements, user_stories, 
-tech_architecture, implementation_timeline, 
-kpi_metrics, risk_mitigation, swot, competitors, 
-citations, target_market
-Do not rename, skip, or add any keys."""
+  "overall_confidence": 0.85
+}"""
 
 
 def remap_brd_keys(data: dict) -> dict:
@@ -157,168 +202,240 @@ def remap_brd_keys(data: dict) -> dict:
 
 
 def generate_fallback_brd(extracted_data: dict) -> dict:
-    startup_name = extracted_data.get("startup_name") or extracted_data.get("business_name") or "Startup"
-    context = extracted_data.get("user_context") or extracted_data.get("problem_statement") or ""
+    startup_name = (
+        extracted_data.get("startup_name") or 
+        extracted_data.get("business_name") or 
+        "Startup"
+    )
+    problem = extracted_data.get("problem_statement", "")
+    solution = extracted_data.get("proposed_solution", "")
+    features = extracted_data.get("key_features", [])
+    users = extracted_data.get("target_users", [])
+    tech = extracted_data.get("tech_stack", [])
+    competitors_raw = extracted_data.get("competitors", [])
+    market_size = extracted_data.get("market_size", "")
+    business_model = extracted_data.get("business_model", "")
+    risks_raw = extracted_data.get("risks", [])
+    metrics_raw = extracted_data.get("success_metrics", [])
+    context = extracted_data.get("user_context", "")
+
+    title = f"BRD: {startup_name}"
     
-    is_medirush = "medirush" in startup_name.lower() or "medicine" in context.lower()
-    
-    if is_medirush:
-        title = f"BRD: {startup_name} - Hyperlocal Pharmacy Network"
-        summary = f"{startup_name} is an on-demand hyperlocal pharmaceutical delivery platform tailored for Tier-2 Indian cities. It bridges the accessibility gap by connecting local certified pharmacies with consumers through a high-availability digital network, ensuring delivery of critical therapeutics within 45 minutes."
-        current_situation = "Tier-2 Indian cities face severe supply chain bottlenecks for critical life-saving medications. Local brick-and-mortar pharmacies lack inventory digital sync, and consumers frequently travel to multiple physical locations to find prescribed drugs."
-        pain_points = [
-            "Lack of centralized real-time medicine inventory tracking in local pharmacies.",
-            "Long waiting times and delivery delays for critical healthcare medications.",
-            "Absence of digitized prescription compliance verification in regional markets."
-        ]
-        impact = "Delayed medical treatment leads to escalated health emergencies, increased hospitalization rates, and high financial overheads for regional families."
-        objectives = [
-            "Establish real-time inventory synchronization with 150+ local pharmacies within the first 6 months.",
-            "Achieve an average order-to-delivery cycle time of less than 40 minutes.",
-            "Implement a secure, compliance-ready OCR engine for digitized prescription parsing."
-        ]
-        in_scope = [
-            "Customer mobile application (iOS and Android) for ordering and upload.",
-            "Pharmacy dashboard for real-time inventory management and order fulfillment.",
-            "Delivery agent routing engine with offline-first tracking capabilities.",
-            "OCR-based prescription scanning and automated verification interface."
-        ]
-        out_of_scope = [
-            "B2B bulk wholesale pharmaceutical distribution logistics.",
-            "Online telemedicine consultations or primary care doctor scheduling.",
-            "International shipping of over-the-counter wellness products."
-        ]
-        stakeholders = [
-            {"role": "Product Management", "responsibility": "Define functional requirements, verify compliance regulations with legal teams."},
-            {"role": "Engineering Lead", "responsibility": "Architect real-time inventory syncing pipelines and GIS routing algorithms."},
-            {"role": "Local Pharmacists", "responsibility": "Upload and update daily inventory stock levels, pack and fulfill orders."},
-            {"role": "Delivery Partners", "responsibility": "Accept routing alerts and deliver packages under cold-chain compliance."}
-        ]
-        functional_requirements = [
-            {"id": "FR-001", "requirement": "The system must allow users to upload images of physical prescriptions during checkout.", "priority": "High"},
-            {"id": "FR-002", "requirement": "The system must sync pharmacy inventory stock levels every 15 seconds to prevent double-ordering.", "priority": "High"},
-            {"id": "FR-003", "requirement": "The system must dynamically route orders to the nearest delivery agent using real-time location metrics.", "priority": "Medium"},
-            {"id": "FR-004", "requirement": "The pharmacy interface must print compliance labels automatically upon order approval.", "priority": "Medium"}
-        ]
-        non_functional_requirements = [
-            {"id": "NFR-001", "requirement": "The system must maintain 99.9% uptime for core order placement pipelines.", "category": "Reliability"},
-            {"id": "NFR-002", "requirement": "Prescription images and health profile logs must be encrypted at rest using AES-256.", "category": "Security"},
-            {"id": "NFR-003", "requirement": "API response latency for inventory searches must be under 300ms under load.", "category": "Performance"}
-        ]
-        user_stories = [
-            {"id": "US-001", "as_a": "Patient", "i_want": "to upload my doctor's prescription directly in the app", "so_that": "I can buy prescription-only antibiotics legally without leaving home.", "acceptance_criteria": ["System parses image", "System flags expired dates", "Pharmacist double-checks validation"]},
-            {"id": "US-002", "as_a": "Pharmacist", "i_want": "to receive order alerts with clear dosage details", "so_that": "I can prepare the package accurately before the courier arrives.", "acceptance_criteria": ["Sound alert on dashboard", "Dosage mismatch highlight", "One-click order ready status"]}
-        ]
-        tech_arch_overview = f"{startup_name} utilizes a high-availability event-driven architecture using Node.js microservices, PostgreSQL for transactional inventory logs, Redis for caching active geolocations, and Google Maps API for vehicle routing. Ingestion is handled via serverless functions."
-        tech_arch_components = ["Customer Mobile App (React Native)", "Pharmacy Web Portal (Next.js)", "Courier App", "Node.js API Gateway", "Redis GIS Cache", "PostgreSQL Database"]
-        tech_arch_data_flow = "1. Customer uploads order. 2. API Gateway validates payload and publishes to Message Broker. 3. Pharmacy portal consumes event and updates status. 4. Courier receives matching route. 5. PostgreSQL stores transaction audit."
-        tech_arch_stack = ["React Native", "Next.js", "Node.js", "PostgreSQL", "Redis", "Google Maps GIS"]
-        timeline = [
-            {"phase": "Phase 1: Architecture & Design", "duration": "4 weeks", "deliverables": ["System database schemas", "Figma wireframe designs", "Regulatory verification checklist"]},
-            {"phase": "Phase 2: Core API & Database", "duration": "8 weeks", "deliverables": ["Functional inventory sync engine", "Auth gateway modules", "PostgreSQL tables"]},
-            {"phase": "Phase 3: Integration & Testing", "duration": "6 weeks", "deliverables": ["Mobile apps build", "Pharmacy dashboard sync", "Beta testing reports"]},
-            {"phase": "Phase 4: Pilot & Deploy", "duration": "4 weeks", "deliverables": ["Launch in 2 target cities", "Staff training completion", "Operational dashboard live"]}
-        ]
-        success_metrics = [
-            {"metric": "Delivery Time", "target": "<40 minutes average", "measurement": "Order placement timestamp vs delivery completion proof."},
-            {"metric": "Inventory Discrepancy", "target": "<1% stock mismatches", "measurement": "Daily physical inventory audit logs vs DB records."},
-            {"metric": "Active User Retention", "target": ">30% MoM return rate", "measurement": "Re-orders completed within 30 days of initial launch."}
-        ]
-        risks = [
-            {"risk": "Delay in pharmacist inventory stock updates leading to canceled orders.", "probability": "High", "impact": "Medium", "mitigation": "Automate inventory checks via pharmacy POS integrations and charge penalties for frequent cancellations."},
-            {"risk": "Regulatory compliance hurdles regarding regional prescription sales.", "probability": "Medium", "impact": "High", "mitigation": "Retain certified legal compliance auditors to review prescription storage and encryption frameworks."}
-        ]
-        swot = {
-            "strengths": ["Hyperlocal pharmacy partnerships avoiding capital-heavy warehouse setups.", "Optimized cold-chain logistics for insulin and emergency vaccines.", "First-mover advantage in targeted Tier-2 Indian regional clusters."],
-            "weaknesses": ["Reliance on manual pharmacy stock-update discipline.", "High courier onboarding and marketing acquisition costs.", "Low tech-literacy among older local pharmacy operators."],
-            "opportunities": ["Expansion into senior home-care wellness subscriptions.", "Partnering with government clinics for remote healthcare delivery.", "Offering diagnostic lab-sample pickups on the same route."],
-            "threats": ["Aggressive pricing and expansion by larger conglomerates like 1mg/Pharmeasy.", "Sudden shifts in regional e-pharmacy prescription laws.", "Extreme monsoonal weather disrupting local delivery operations."]
-        }
-        competitors = [
-            {"name": "Tata 1mg / Pharmeasy", "advantages": "National brand awareness, deep financial backing.", "disadvantages": "Centralized shipping model takes 24-48 hours; lacks 45-minute hyperlocal delivery speed in Tier-2 regions.", "risk_level": "Medium"},
-            {"name": "Local Physical Stores", "advantages": "High trust levels, immediate pickup available.", "disadvantages": "No online presence, limited specialty stock availability, no delivery option.", "risk_level": "Low"}
-        ]
-        citations = [
-            {"source_text": "Hyperlocal medicine delivery app", "confidence": 0.98, "mapped_requirement": "Executive Summary, problem_statement, objectives, scope"},
-            {"source_text": "Tier-2 Indian cities", "confidence": 0.95, "mapped_requirement": "problem_statement, objectives, swot.strengths, competitors"}
-        ]
-        target_market = {
-            "title": "Target Market Analysis",
-            "content": "TAM: $5.0B (Indian E-Pharmacy market by 2028). SAM: $1.2B (Serviceable segment in Tier-2 and Tier-3 urban grids). SOM: $45M (Year 1 penetration targeting 150 pharmacies in the initial cities). MediRush focuses on elderly chronic care patients, busy working professionals, and local pharmacy digital sync buyers."
-        }
-    else:
-        # Default Solar Grid fallback
-        title = f"BRD: {startup_name} - Peer-to-Peer Energy Grid"
-        summary = f"{startup_name} is a localized energy trading platform that allows consumers with excess solar capacity to sell energy credits directly to neighboring households via a distributed ledger system, improving grid efficiency."
-        current_situation = "Local grid operators face load balancing challenges as residential solar production peaks during the day. Currently, there is no direct mechanism for residential solar producers to trade credits hyperlocally."
-        pain_points = ["Inefficient credit distribution", "High transmission overheads from remote plants", "Lack of financial incentive for solar homeowners."]
-        impact = "Wasted renewable capacity and increased reliance on fossil-fuel backup generators during peak hours."
-        objectives = ["Establish a P2P credit exchange for 500+ homes.", "Reduce localized grid transmission losses by 12%."]
-        in_scope = ["Smart meter ingestion pipeline", "P2P transaction ledger", "Homeowner portal."]
-        out_of_scope = ["High voltage industrial distribution", "Hardware manufacturing of smart meters."]
-        stakeholders = [
-            {"role": "Grid Operations", "responsibility": "Manage transmission balances."},
-            {"role": "Homeowners", "responsibility": "Feed excess energy and trade credits."}
-        ]
-        functional_requirements = [
-            {"id": "FR-001", "requirement": "The system must record energy production logs every 60 seconds.", "priority": "High"}
-        ]
-        non_functional_requirements = [
-            {"id": "NFR-001", "requirement": "Uptime must exceed 99.9%.", "category": "Reliability"}
-        ]
-        user_stories = [
-            {"id": "US-001", "as_a": "Homeowner", "i_want": "to sell surplus credits to my neighbor", "so_that": "I can offset my solar panel capital cost faster.", "acceptance_criteria": ["Automatic matching", "Ledger verification"]}
-        ]
-        tech_arch_overview = "Distributed energy ledger system utilizing smart meter hardware sync, Node.js, and bigquery for historical data logging."
-        tech_arch_components = ["Smart Meter Ingest", "Ledger Database", "User App"]
-        tech_arch_data_flow = "Smart meter feeds data to ledger, customer app views balance."
-        tech_arch_stack = ["Node.js", "Python", "BigQuery"]
-        timeline = [{"phase": "Phase 1: Pilot Setup", "duration": "8 weeks", "deliverables": ["50 home test grid"]}]
-        success_metrics = [{"metric": "Trade Volume", "target": ">100MWh/mo", "measurement": "Ledger logs"}]
-        risks = [{"risk": "Grid hardware connection failure.", "probability": "Low", "impact": "High", "mitigation": "Redundant offline caches"}]
-        swot = {"strengths": ["Decentralized infrastructure"], "weaknesses": ["High hardware costs"], "opportunities": ["Grid integration"], "threats": ["Policy changes"]}
-        competitors = [{"name": "Traditional Grid", "advantages": "High reliability", "disadvantages": "High transmission losses, no consumer credits", "risk_level": "High"}]
-        citations = [{"source_text": "Solar energy credits", "confidence": 0.95, "mapped_requirement": "Executive Summary"}]
-        target_market = {
-            "title": "Target Market Analysis",
-            "content": "TAM: $12.5B (Global Peer-to-Peer solar energy credit and distributed microgrid market). SAM: $2.4B (Residential solar capacity owners and local grid operations). SOM: $120M (Initial pilot deployments across high-solar states like California and Arizona)."
-        }
+    summary = (
+        f"{startup_name} is an innovative platform designed to solve "
+        f"{problem[:200] if problem else 'key market challenges'}. "
+        f"The solution focuses on {solution[:200] if solution else 'delivering value to target users'} "
+        f"targeting {', '.join(users[:2]) if users else 'key user segments'}."
+    )
 
     brd = {
         "title": title,
         "version": "1.0",
-        "date": "2026-06-06",
+        "date": "2026-06-13",
         "executive_summary": summary,
         "problem_statement": {
-            "current_situation": current_situation,
-            "pain_points": pain_points,
-            "impact": impact
+            "current_situation": problem or f"{startup_name} addresses a critical gap in the market.",
+            "pain_points": features[:3] if features else ["Manual processes", "Lack of automation", "Poor user experience"],
+            "impact": f"Without {startup_name}, users face significant challenges in {problem[:100] if problem else 'their daily workflows'}."
         },
-        "objectives": objectives,
+        "objectives": [
+            f"Launch {startup_name} MVP within 3 months with core features",
+            f"Acquire first 1,000 users from {', '.join(users[:2]) if users else 'target market'} segment",
+            f"Achieve {metrics_raw[0] if metrics_raw else '85%'} user satisfaction score",
+            f"Generate first revenue within 6 months via {business_model or 'subscription model'}"
+        ],
         "scope": {
-            "in_scope": in_scope,
-            "out_of_scope": out_of_scope
+            "in_scope": features[:5] if features else [
+                "Core product functionality",
+                "User authentication and profiles", 
+                "Mobile and web application",
+                "Basic analytics dashboard"
+            ],
+            "out_of_scope": [
+                "Third-party hardware integrations",
+                "Enterprise white-label solutions",
+                "Offline-only functionality",
+                "International localization (Phase 2)"
+            ]
         },
-        "stakeholders": stakeholders,
-        "functional_requirements": functional_requirements,
-        "non_functional_requirements": non_functional_requirements,
-        "user_stories": user_stories,
+        "stakeholders": [
+            {"role": "Product Manager", 
+             "responsibility": f"Define and prioritize {startup_name} feature roadmap"},
+            {"role": users[0] if users else "End User", 
+             "responsibility": "Primary consumer of the product"},
+            {"role": "Engineering Lead", 
+             "responsibility": "Technical architecture and delivery"},
+            {"role": "Business Development", 
+             "responsibility": f"Partner acquisition and {business_model or 'revenue'} strategy"}
+        ],
+        "functional_requirements": [
+            {"id": f"FR-00{i+1}", 
+             "requirement": f"The system must support {feat}", 
+             "priority": "High" if i < 2 else "Medium"}
+            for i, feat in enumerate(
+                features[:5] if features else [
+                    "user registration and authentication",
+                    "core feature delivery",
+                    "real-time notifications",
+                    "data export and reporting"
+                ]
+            )
+        ],
+        "non_functional_requirements": [
+            {"id": "NFR-001", 
+             "requirement": "System must maintain 99.9% uptime SLA", 
+             "category": "Reliability"},
+            {"id": "NFR-002", 
+             "requirement": "API response time under 200ms for 95th percentile", 
+             "category": "Performance"},
+            {"id": "NFR-003", 
+             "requirement": "All user data encrypted at rest using AES-256", 
+             "category": "Security"},
+            {"id": "NFR-004", 
+             "requirement": "System must scale to 100,000 concurrent users", 
+             "category": "Scalability"}
+        ],
+        "user_stories": [
+            {
+                "id": "US-001",
+                "as_a": users[0] if users else "User",
+                "i_want": f"to use {features[0] if features else 'the core feature'}",
+                "so_that": f"I can {solution[:100] if solution else 'achieve my goal'} efficiently",
+                "acceptance_criteria": [
+                    "Feature works on mobile and desktop",
+                    "Response time under 2 seconds",
+                    "Clear success/error feedback"
+                ]
+            },
+            {
+                "id": "US-002",
+                "as_a": users[1] if len(users) > 1 else "Power User",
+                "i_want": f"to access {features[1] if len(features) > 1 else 'advanced features'}",
+                "so_that": "I can maximize productivity and ROI",
+                "acceptance_criteria": [
+                    "Feature accessible within 2 clicks",
+                    "Data persists across sessions",
+                    "Export functionality available"
+                ]
+            }
+        ],
         "technical_architecture": {
-            "overview": tech_arch_overview,
-            "components": tech_arch_components,
-            "data_flow": tech_arch_data_flow,
-            "tech_stack": tech_arch_stack
+            "overview": f"{startup_name} uses a cloud-native microservices architecture on Google Cloud Platform, ensuring scalability and reliability.",
+            "components": tech if tech else [
+                "React/Next.js Frontend",
+                "FastAPI Backend",
+                "PostgreSQL Database",
+                "Redis Cache",
+                "Google Cloud Run"
+            ],
+            "data_flow": f"User request → API Gateway → {startup_name} Core Service → Database → Response",
+            "tech_stack": tech if tech else [
+                "Next.js", "FastAPI", "PostgreSQL", 
+                "Redis", "Google Cloud", "Docker"
+            ]
         },
-        "success_metrics": success_metrics,
-        "risks": risks,
-        "timeline": timeline,
-        "swot": swot,
-        "competitors": competitors,
-        "citations": citations,
-        "target_market": target_market,
-        "overall_confidence": 0.95
+        "success_metrics": [
+            {"metric": m, 
+             "target": "Exceed industry benchmark", 
+             "measurement": "Monthly analytics review"}
+            for m in (metrics_raw[:3] if metrics_raw else [
+                "Monthly Active Users",
+                "User Retention Rate",
+                "Revenue Growth MoM"
+            ])
+        ],
+        "risks": [
+            {
+                "risk": r,
+                "probability": "Medium",
+                "impact": "High",
+                "mitigation": f"Proactive monitoring and contingency planning for {r[:50]}"
+            }
+            for r in (risks_raw[:3] if risks_raw else [
+                "Market adoption slower than projected",
+                "Technical scalability challenges",
+                "Regulatory compliance requirements"
+            ])
+        ],
+        "timeline": [
+            {"phase": "Phase 1: Foundation", 
+             "duration": "4 weeks", 
+             "deliverables": ["Architecture design", "Core infrastructure setup", "Team onboarding"]},
+            {"phase": "Phase 2: Core Development", 
+             "duration": "8 weeks", 
+             "deliverables": ["MVP features built", "API integrations", "Internal testing"]},
+            {"phase": "Phase 3: Beta Launch", 
+             "duration": "4 weeks", 
+             "deliverables": ["Beta user onboarding", "Feedback collection", "Bug fixes"]},
+            {"phase": "Phase 4: Public Launch", 
+             "duration": "4 weeks", 
+             "deliverables": ["Marketing campaign", "Full launch", "KPI monitoring"]}
+        ],
+        "swot": {
+            "strengths": [
+                f"First-mover advantage in {problem[:80] if problem else 'target market'}",
+                f"Strong technical foundation using {', '.join(tech[:2]) if tech else 'modern tech stack'}",
+                f"Clear target market: {', '.join(users[:2]) if users else 'identified user segments'}",
+                f"Innovative solution: {solution[:100] if solution else 'unique approach'}"
+            ],
+            "weaknesses": [
+                "Early stage with limited brand recognition",
+                "Dependent on initial funding for growth",
+                f"Market education needed for {problem[:60] if problem else 'new concept'}",
+                "Small team — needs strategic hiring"
+            ],
+            "opportunities": [
+                f"Growing demand for {solution[:80] if solution else 'innovative solutions'}",
+                "Partnership opportunities with established players",
+                f"Expansion beyond initial {users[0] if users else 'user'} segment",
+                "International market expansion in Phase 3"
+            ],
+            "threats": [
+                f"Established competitors: {', '.join(str(c) for c in competitors_raw[:2]) if competitors_raw else 'existing solutions'}",
+                "Rapidly changing technology landscape",
+                "Economic uncertainty affecting user spending",
+                "Potential regulatory changes in the sector"
+            ]
+        },
+        "competitors": [
+            {
+                "name": str(c),
+                "advantages": "Established market presence and user base",
+                "disadvantages": f"Lacks the innovation of {startup_name}'s approach",
+                "risk_level": "Medium"
+            }
+            for c in (competitors_raw[:3] if competitors_raw else [
+                "Existing Manual Solutions",
+                "Generic Platforms",
+                "Direct Competitors"
+            ])
+        ],
+        "citations": [
+            {
+                "source_text": problem[:100] if problem else "User provided context",
+                "confidence": 0.90,
+                "mapped_requirement": "executive_summary, problem_statement"
+            },
+            {
+                "source_text": solution[:100] if solution else "Proposed solution",
+                "confidence": 0.85,
+                "mapped_requirement": "objectives, scope, user_stories"
+            }
+        ],
+        "target_market": {
+            "title": "Target Market Analysis",
+            "content": (
+                f"TAM: {market_size or '$10B+'} (Total addressable market for {startup_name}'s sector). "
+                f"SAM: Estimated 20-25% of TAM representing serviceable segments "
+                f"({', '.join(users[:2]) if users else 'primary user segments'}). "
+                f"SOM: Conservative 2-5% capture in Year 1, growing to 10-15% by Year 3. "
+                f"Primary focus: {', '.join(users[:3]) if users else 'core user segments'} "
+                f"who face challenges with {problem[:100] if problem else 'current solutions'}."
+            )
+        },
+        "overall_confidence": extracted_data.get("confidence", 0.75)
     }
-    
+
     return remap_brd_keys(brd)
 
 
@@ -382,20 +499,27 @@ async def extract_information(content: str, input_type: str, filename: Optional[
         return parse_dirty_json(raw)
 
     except Exception as e:
-        # Return a robust simulated extraction fallback to prevent downstream errors when rate limited
+        # Dynamic fallback — extract key signals from the raw content string
+        print(f"[extract_information] Gemini call failed ({e}), using dynamic fallback")
+        content_lower = content.lower() if isinstance(content, str) else ""
+        # Attempt to pull a startup name from common patterns
+        import re as _re
+        name_match = _re.search(r'(?:startup|company|app|platform|product)[:\s]+([A-Z][A-Za-z0-9]+)', content)
+        extracted_name = name_match.group(1) if name_match else None
         return {
-            "business_name": "MediRush" if "medirush" in content.lower() or "medicine" in content.lower() else "Solar Grid",
-            "problem_statement": content,
-            "target_users": ["customers", "delivery partners", "local pharmacies"] if ("medirush" in content.lower() or "medicine" in content.lower()) else ["homeowners", "grid operators"],
-            "proposed_solution": "Hyperlocal medicine delivery app" if ("medirush" in content.lower() or "medicine" in content.lower()) else "P2P Solar Trading Platform",
-            "key_features": ["real-time tracking", "digital prescription upload", "automated routing"] if ("medirush" in content.lower() or "medicine" in content.lower()) else ["p2p ledger", "credit tokens"],
-            "tech_stack": ["React Native", "Node.js", "MongoDB"] if ("medirush" in content.lower() or "medicine" in content.lower()) else ["python", "next.js"],
-            "market_size": "$5B" if ("medirush" in content.lower() or "medicine" in content.lower()) else "$10B",
-            "competitors": ["1mg", "Pharmeasy"] if ("medirush" in content.lower() or "medicine" in content.lower()) else [],
-            "business_model": "Commission on deliveries" if ("medirush" in content.lower() or "medicine" in content.lower()) else "SaaS",
-            "success_metrics": ["delivery time < 30 mins", "active monthly users > 10k"],
-            "risks": ["regulatory approvals for prescription meds", "delivery partner churn"],
-            "confidence": 0.95
+            "business_name": extracted_name,
+            "problem_statement": content[:500] if isinstance(content, str) else "",
+            "target_users": [],
+            "proposed_solution": "",
+            "key_features": [],
+            "tech_stack": [],
+            "market_size": "",
+            "competitors": [],
+            "business_model": "",
+            "success_metrics": [],
+            "risks": [],
+            "confidence": 0.4,
+            "user_context": content[:1000] if isinstance(content, str) else ""
         }
 
 
