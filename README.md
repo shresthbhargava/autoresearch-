@@ -11,7 +11,7 @@ pinned: false
 # AutoResearch AI 🔬
 ### Autonomous Research & BRD Generation Agent
 
-> Built for Hack Days Delhi PS21 · Major League Hacking · Team Vertex
+> Built with Google Gemini and Vertex AI
 
 ## 🚀 Live Demo
 - **Frontend:** https://autoresearch-emi1zjhkd-shresthbhargavas-projects.vercel.app

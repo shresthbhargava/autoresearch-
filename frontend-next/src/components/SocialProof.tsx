@@ -21,7 +21,7 @@ export default function SocialProof() {
               05 / CREDENTIALS
             </span>
             <h3 className="font-serif text-3xl sm:text-4xl font-bold tracking-tight uppercase leading-none">
-              Built for Hack Days Delhi · PS21
+              Enterprise Grade AI Architecture
             </h3>
           </div>
           <p className="text-sm font-bold tracking-widest uppercase font-mono text-neutral-500 border border-neutral-300 px-4 py-2 self-start md:self-center">
